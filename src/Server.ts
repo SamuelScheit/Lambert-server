@@ -5,6 +5,14 @@ import { HTTPError } from "./HTTPError";
 import "express-async-errors";
 import "missing-native-js-functions";
 
+declare global {
+	namespace Express {
+		interface Request {
+			server: Server;
+		}
+	}
+}
+
 export type ServerOptions = {
 	port: number;
 	host: string;
@@ -69,6 +77,10 @@ export class Server {
 	}
 
 	async registerRoutes(root: string) {
+		this.app.use((req, res, next) => {
+			req.server = this;
+			next();
+		});
 		const result = await traverseDirectory({ dirname: root, recursive: true }, this.registerRoute.bind(this, root));
 		if (this.options.errorHandler) this.errorHandler();
 		return result;
