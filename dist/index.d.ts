@@ -1,4 +1,4 @@
 import { HTTPError } from "./HTTPError";
-import { Server } from "./Server";
+import { Server, ServerOptions } from "./Server";
 import { traverseDirectory } from "./Utils";
-export { Server, HTTPError, traverseDirectory };
+export { Server, ServerOptions, HTTPError, traverseDirectory };
