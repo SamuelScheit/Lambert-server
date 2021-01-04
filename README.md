@@ -3,7 +3,7 @@ An express.js Route Handler
 
 ## Installation
 ```
-npm i github:Trenite/Lambert-server
+npm i lambert-server
 ```
 
 ## Usage
