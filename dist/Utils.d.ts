@@ -6,3 +6,4 @@ export interface traverseDirectoryOptions {
     recursive?: boolean;
 }
 export declare function traverseDirectory<T>(options: traverseDirectoryOptions, action: (path: string) => T): Promise<T[]>;
+export declare function log(...args: any): void;

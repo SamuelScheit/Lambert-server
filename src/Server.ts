@@ -1,5 +1,5 @@
 import express, { Application, NextFunction, Request, Response, Router } from "express";
-import { traverseDirectory } from "./Utils";
+import { traverseDirectory, log } from "./Utils";
 import { Server as HTTPServer } from "http";
 import { HTTPError } from "./HTTPError";
 import "express-async-errors";
@@ -76,16 +76,7 @@ export class Server {
 
 	async start() {
 		await new Promise<void>((res) => this.app.listen(this.options.port, () => res()));
-		let _time_: Date = new Date();
-
-		let hours = _time_.getHours().toString();
-		let minutes = _time_.getMinutes().toString();
-		let seconds = _time_.getSeconds().toString();
-
-		hours = hours.length < 2 ? "0" + hours : hours;
-		minutes = minutes.length < 2 ? "0" + minutes : minutes;
-		seconds = seconds.length < 2 ? "0" + seconds : seconds;
-		console.log(`[Server][${hours}:${minutes}:${seconds}] started on ${this.options.host}:${this.options.port}`);
+		log(`[Server] started on ${this.options.host}:${this.options.port}`);
 	}
 
 	async registerRoutes(root: string) {
@@ -114,16 +105,7 @@ export class Server {
 			if (!router || router?.prototype?.constructor?.name !== "router")
 				throw `File doesn't export any default router`;
 			this.app.use(path, <Router>router);
-			let _time_: Date = new Date();
-
-			let hours = _time_.getHours().toString();
-			let minutes = _time_.getMinutes().toString();
-			let seconds = _time_.getSeconds().toString();
-
-			hours = hours.length < 2 ? "0" + hours : hours;
-			minutes = minutes.length < 2 ? "0" + minutes : minutes;
-			seconds = seconds.length < 2 ? "0" + seconds : seconds;
-			console.log(`[Server][${hours}:${minutes}:${seconds}] Route ${path} registered`);
+			log(`[Server] Route ${path} registered`);
 			return router;
 		} catch (error) {
 			console.error(new Error(`[Server] Failed to register route ${path}: ${error}`));
