@@ -53,7 +53,7 @@ main().catch(console.error)
 In /routes/index.js
 ```js
 import { Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError, check } from "lambert-server";
 // const { Router } = require("express")
 // const { HTTPError } = require("lambert-server")
 
@@ -64,9 +64,11 @@ router.get("/", (req, res) => {
 });
 
 router.get("/test", (req, res) => {
-	throw new HTTPError(401, "You don't have access to this ressource");
+	throw new HTTPError("You don't have access to this ressource", 401);
 });
-
+ 
+// JSON body parser
+app.post("/", check({ username: String, age: Number, posts: [{ title: String }] }), (req, res) => {});
 
 export default router;
 // module.exports = router

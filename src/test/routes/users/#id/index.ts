@@ -1,10 +1,13 @@
 import { Router } from "express";
+import { check } from "../../../../check";
 
-const router = Router();
+const app = Router();
 
-router.get("/", (req, res) => {
+app.get("/", (req, res) => {
 	console.log(req.params);
 	res.send("USER");
 });
 
-export default router;
+app.post("/", check({ test: String }), (req, res) => {});
+
+export default app;

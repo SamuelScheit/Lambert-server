@@ -15,6 +15,7 @@ export declare type ServerOptions = {
     host: string;
     production: boolean;
     errorHandler: boolean;
+    jsonBody: boolean;
 };
 export declare class Server {
     app: Application;

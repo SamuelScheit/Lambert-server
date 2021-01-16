@@ -4,6 +4,7 @@ import { Server as HTTPServer } from "http";
 import { HTTPError } from "./HTTPError";
 import "express-async-errors";
 import "missing-native-js-functions";
+import bodyParser from "body-parser";
 
 declare global {
 	namespace Express {
@@ -18,6 +19,7 @@ export type ServerOptions = {
 	host: string;
 	production: boolean;
 	errorHandler: boolean;
+	jsonBody: boolean;
 };
 
 // Overwrite default options for Router with default value true for mergeParams
@@ -41,6 +43,7 @@ export class Server {
 		if (!opts.host) opts.host = "0.0.0.0";
 		if (opts.production == null) opts.production = false;
 		if (opts.errorHandler == null) opts.errorHandler = true;
+		if (opts.jsonBody == null) opts.jsonBody = true;
 
 		this.options = <ServerOptions>opts;
 
@@ -81,6 +84,7 @@ export class Server {
 			req.server = this;
 			next();
 		});
+		if (this.options.jsonBody) this.app.use(bodyParser.json());
 		const result = await traverseDirectory({ dirname: root, recursive: true }, this.registerRoute.bind(this, root));
 		if (this.options.errorHandler) this.errorHandler();
 		return result;
