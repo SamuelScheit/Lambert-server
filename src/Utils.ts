@@ -36,3 +36,7 @@ export async function traverseDirectory<T>(
 
 	return <T[]>t.filter((x) => x != undefined);
 }
+
+export function log(...args: any) {
+	console.log(`[${new Date().toTimeString().split(" ")[0]}]`, ...args);
+}

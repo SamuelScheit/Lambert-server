@@ -1,5 +1,5 @@
 import express, { Application, NextFunction, Request, Response, Router } from "express";
-import { traverseDirectory } from "./Utils";
+import { traverseDirectory, log } from "./Utils";
 import { Server as HTTPServer } from "http";
 import { HTTPError } from "./HTTPError";
 import "express-async-errors";
@@ -76,7 +76,7 @@ export class Server {
 
 	async start() {
 		await new Promise<void>((res) => this.app.listen(this.options.port, () => res()));
-		console.log(`[Server] started on ${this.options.host}:${this.options.port}`);
+		log(`[Server] started on ${this.options.host}:${this.options.port}`);
 	}
 
 	async registerRoutes(root: string) {
@@ -105,7 +105,7 @@ export class Server {
 			if (!router || router?.prototype?.constructor?.name !== "router")
 				throw `File doesn't export any default router`;
 			this.app.use(path, <Router>router);
-			console.log(`[Server] Route ${path} registered`);
+			log(`[Server] Route ${path} registered`);
 			return router;
 		} catch (error) {
 			console.error(new Error(`[Server] Failed to register route ${path}: ${error}`));
