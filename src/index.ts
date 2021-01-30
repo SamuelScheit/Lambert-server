@@ -1,6 +1,6 @@
-import { check } from "./check";
+import { check, Tuple } from "./check";
 import { HTTPError } from "./HTTPError";
 import { Server, ServerOptions } from "./Server";
 import { traverseDirectory } from "./Utils";
 
-export { Server, ServerOptions, HTTPError, traverseDirectory, check };
+export { Server, ServerOptions, HTTPError, traverseDirectory, check, Tuple };

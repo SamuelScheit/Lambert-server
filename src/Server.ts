@@ -56,12 +56,7 @@ export class Server {
 			let message = error?.toString();
 
 			if (error instanceof HTTPError && error.code) code = error.code;
-			else if (
-				error instanceof TypeError ||
-				error instanceof SyntaxError ||
-				error instanceof ReferenceError ||
-				error instanceof RangeError
-			) {
+			else {
 				console.error(error);
 				if (this.options.production) {
 					message = "Internal Server Error";
