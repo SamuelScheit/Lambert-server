@@ -8,6 +8,9 @@ app.get("/", (req, res) => {
 	res.send("USER");
 });
 
-app.post("/", check({ test: String }), (req, res) => {});
+app.post("/", check({ test: String, $name: String }), (req, res) => {
+	console.log(req.body);
+	res.send("OK");
+});
 
 export default app;

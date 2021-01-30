@@ -1,9 +1,12 @@
+import "missing-native-js-functions";
 import { NextFunction, Request, Response } from "express";
+
+const OPTIONAL_PREFIX = "$";
 
 export function check(schema: any) {
 	return (req: Request, res: Response, next: NextFunction) => {
 		try {
-			instanceOf(schema, req.body);
+			instanceOf(schema, req.body, "body");
 			next();
 		} catch (error) {
 			next(error);
@@ -11,7 +14,9 @@ export function check(schema: any) {
 	};
 }
 
-export function instanceOf(type: any, value: any, path: string = ""): Boolean {
+export function instanceOf(type: any, value: any, path: string = "", optional = false): Boolean {
+	if (optional && value == null) return true;
+
 	switch (type) {
 		case String:
 			if (typeof value === "string") return true;
@@ -30,9 +35,22 @@ export function instanceOf(type: any, value: any, path: string = ""): Boolean {
 		if (typeof value !== "object") throw `${path} must be a object`;
 		if (Array.isArray(type)) {
 			if (!Array.isArray(value)) throw `${path} must be an array`;
-			return type.every((t, i) => instanceOf(t, value[i], `${path}[${i}]`));
+			return type.every((t, i) => instanceOf(t, value[i], `${path}[${i}]`, optional));
 		}
-		return Object.keys(type).every((key) => instanceOf(type[key], value[key], `${path}.${key}`));
+
+		const diff = Object.keys(value).missing(
+			Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x))
+		);
+
+		if (diff.length) throw new Error(`Unkown key '${diff}' in ${path}`);
+
+		return Object.keys(type).every((key) => {
+			let newKey = key;
+			const OPTIONAL = key.startsWith(OPTIONAL_PREFIX);
+			if (OPTIONAL) newKey = newKey.slice(OPTIONAL_PREFIX.length);
+
+			return instanceOf(type[key], value[newKey], `${path}.${newKey}`, OPTIONAL);
+		});
 	}
 
 	if (!type) return true; // no type was specified

@@ -33,6 +33,17 @@ const server = new Server({
 server.registerRoutes(root: string): Promise<any[]>; // root is the root directory of all routes
 ```
 
+## Body checking
+JSON body can be checked with a schema, that you pass to the check function.
+A Schema is a Object Structure with key-value objects that checks if the key is an instance of the value (class).
+You can specify optional parameters if you prefix the key with a $
+e.g.: ``{ $captcha: String }``, this will make the ``captcha`` property in the body optional.
+```js
+import { check } from "lambert-server";
+const SCHEMA = { username: String, age: Number, $posts: [{ title: String }] }
+app.post("/", check(SCHEMA), (req, res) => {});
+```
+
 ## Examples
 ### Example Server
 In /index.js
@@ -68,7 +79,7 @@ router.get("/test", (req, res) => {
 });
  
 // JSON body parser
-app.post("/", check({ username: String, age: Number, posts: [{ title: String }] }), (req, res) => {});
+app.post("/", check({ username: String, age: Number, $posts: [{ title: String }] }), (req, res) => {});
 
 export default router;
 // module.exports = router
