@@ -5,6 +5,7 @@ import { HTTPError } from "./HTTPError";
 import "express-async-errors";
 import "missing-native-js-functions";
 import bodyParser from "body-parser";
+import helmet from "helmet";
 
 declare global {
 	namespace Express {
@@ -50,6 +51,19 @@ export class Server {
 		this.app = express();
 	}
 
+	private secureExpress() {
+		this.app.use(helmet.contentSecurityPolicy());
+		this.app.use(helmet.expectCt);
+		this.app.use(helmet.originAgentCluster());
+		this.app.use(helmet.referrerPolicy({ policy: "same-origin" }));
+		this.app.use(helmet.hidePoweredBy());
+		this.app.use(helmet.noSniff());
+		this.app.use(helmet.dnsPrefetchControl({ allow: true }));
+		this.app.use(helmet.ieNoOpen());
+		this.app.use(helmet.frameguard({ action: "deny" }));
+		this.app.use(helmet.permittedCrossDomainPolicies({ permittedPolicies: "none" }));
+	}
+
 	private errorHandler() {
 		this.app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 			let code = 400;
@@ -82,6 +96,7 @@ export class Server {
 		if (this.options.jsonBody) this.app.use(bodyParser.json());
 		const result = await traverseDirectory({ dirname: root, recursive: true }, this.registerRoute.bind(this, root));
 		if (this.options.errorHandler) this.errorHandler();
+		if (this.options.production) this.secureExpress();
 		return result;
 	}
 
