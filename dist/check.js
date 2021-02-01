@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.instanceOf = exports.Tuple = exports.check = void 0;
+exports.instanceOf = exports.Email = exports.Tuple = exports.check = void 0;
 require("missing-native-js-functions");
 const OPTIONAL_PREFIX = "$";
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 function check(schema) {
     return (req, res, next) => {
         try {
@@ -23,6 +24,15 @@ class Tuple {
     }
 }
 exports.Tuple = Tuple;
+class Email {
+    constructor(email) {
+        this.email = email;
+    }
+    check() {
+        return !!this.email.match(EMAIL_REGEX);
+    }
+}
+exports.Email = Email;
 function instanceOf(type, value, { path = "", optional = false } = {}) {
     var _a;
     if (!type)
@@ -65,6 +75,11 @@ function instanceOf(type, value, { path = "", optional = false } = {}) {
                 if (type.types.some((x) => instanceOf(x, value, { path, optional })))
                     return true;
                 throw `${path} must be one of ${type.types}`;
+            }
+            if (type instanceof Email) {
+                if (type.check())
+                    return true;
+                throw `${path} is not a valid E-Mail`;
             }
             if (value instanceof type)
                 return true;

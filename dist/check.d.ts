@@ -5,6 +5,11 @@ export declare class Tuple {
     types: any[];
     constructor(...types: any[]);
 }
+export declare class Email {
+    email: string;
+    constructor(email: string);
+    check(): boolean;
+}
 export declare function instanceOf(type: any, value: any, { path, optional }?: {
     path?: string;
     optional?: boolean;
