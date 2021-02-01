@@ -2,6 +2,7 @@ import "missing-native-js-functions";
 import { NextFunction, Request, Response } from "express";
 
 const OPTIONAL_PREFIX = "$";
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export function check(schema: any) {
 	return (req: Request, res: Response, next: NextFunction) => {
@@ -19,6 +20,13 @@ export class Tuple {
 	public types: any[];
 	constructor(...types: any[]) {
 		this.types = types;
+	}
+}
+
+export class Email {
+	constructor(public email: string) {}
+	check() {
+		return !!this.email.match(EMAIL_REGEX);
 	}
 }
 
@@ -60,6 +68,10 @@ export function instanceOf(
 			if (type instanceof Tuple) {
 				if ((<Tuple>type).types.some((x) => instanceOf(x, value, { path, optional }))) return true;
 				throw `${path} must be one of ${type.types}`;
+			}
+			if (type instanceof Email) {
+				if ((<Email>type).check()) return true;
+				throw `${path} is not a valid E-Mail`;
 			}
 			if (value instanceof type) return true;
 			throw `${path} must be an instance of ${type}`;

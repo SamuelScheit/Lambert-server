@@ -19,7 +19,7 @@ export type ServerOptions = {
 	port: number;
 	host: string;
 	production: boolean;
-	errorHandler: boolean;
+	errorHandler?: { (err: Error, req: Request, res: Response, next: NextFunction): any };
 	jsonBody: boolean;
 };
 
@@ -43,7 +43,7 @@ export class Server {
 		if (!opts.port) opts.port = 8080;
 		if (!opts.host) opts.host = "0.0.0.0";
 		if (opts.production == null) opts.production = false;
-		if (opts.errorHandler == null) opts.errorHandler = true;
+		if (opts.errorHandler == null) opts.errorHandler = this.errorHandler;
 		if (opts.jsonBody == null) opts.jsonBody = true;
 
 		this.options = <ServerOptions>opts;
@@ -51,7 +51,7 @@ export class Server {
 		this.app = express();
 	}
 
-	private secureExpress() {
+	protected secureExpress() {
 		this.app.use(helmet.contentSecurityPolicy());
 		this.app.use(helmet.expectCt);
 		this.app.use(helmet.originAgentCluster());
@@ -64,23 +64,21 @@ export class Server {
 		this.app.use(helmet.permittedCrossDomainPolicies({ permittedPolicies: "none" }));
 	}
 
-	private errorHandler() {
-		this.app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-			let code = 400;
-			let message = error?.toString();
+	public errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
+		let code = 400;
+		let message = error?.toString();
 
-			if (error instanceof HTTPError && error.code) code = error.code;
-			else {
-				console.error(error);
-				if (this.options.production) {
-					message = "Internal Server Error";
-				}
-				code = 500;
+		if (error instanceof HTTPError && error.code) code = error.code;
+		else {
+			console.error(error);
+			if (this.options.production) {
+				message = "Internal Server Error";
 			}
+			code = 500;
+		}
 
-			res.status(code).json({ success: false, code: code, error: true, message });
-			return next();
-		});
+		res.status(code).json({ success: false, code: code, error: true, message });
+		return next();
 	}
 
 	async start() {
@@ -95,7 +93,7 @@ export class Server {
 		});
 		if (this.options.jsonBody) this.app.use(bodyParser.json());
 		const result = await traverseDirectory({ dirname: root, recursive: true }, this.registerRoute.bind(this, root));
-		if (this.options.errorHandler) this.errorHandler();
+		if (this.options.errorHandler) this.app.use(this.options.errorHandler);
 		if (this.options.production) this.secureExpress();
 		return result;
 	}
@@ -114,6 +112,8 @@ export class Server {
 			if (router.default) router = router.default;
 			if (!router || router?.prototype?.constructor?.name !== "router")
 				throw `File doesn't export any default router`;
+
+			if (this.options.errorHandler) router.use(this.options.errorHandler);
 			this.app.use(path, <Router>router);
 			log(`[Server] Route ${path} registered`);
 			return router;
