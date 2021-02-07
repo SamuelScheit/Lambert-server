@@ -61,6 +61,9 @@ export function instanceOf(
 			if (value == "false") value = false;
 			if (typeof value === "boolean") return true;
 			throw `${path} must be a boolean`;
+		case Object:
+			if (typeof value === "object" && value !== null) return true;
+			throw `${path} must be a object`;
 	}
 
 	if (typeof type === "object") {

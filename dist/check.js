@@ -68,6 +68,10 @@ function instanceOf(type, value, { path = "", optional = false } = {}) {
             if (typeof value === "boolean")
                 return true;
             throw `${path} must be a boolean`;
+        case Object:
+            if (typeof value === "object" && value !== null)
+                return true;
+            throw `${path} must be a object`;
     }
     if (typeof type === "object") {
         if (((_a = type === null || type === void 0 ? void 0 : type.constructor) === null || _a === void 0 ? void 0 : _a.name) != "Object") {
