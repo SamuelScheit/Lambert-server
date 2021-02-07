@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tuple = exports.check = exports.traverseDirectory = exports.HTTPError = exports.Server = void 0;
+exports.instanceOf = exports.Email = exports.Tuple = exports.check = exports.traverseDirectory = exports.HTTPError = exports.Server = void 0;
 const check_1 = require("./check");
 Object.defineProperty(exports, "check", { enumerable: true, get: function () { return check_1.check; } });
+Object.defineProperty(exports, "Email", { enumerable: true, get: function () { return check_1.Email; } });
+Object.defineProperty(exports, "instanceOf", { enumerable: true, get: function () { return check_1.instanceOf; } });
 Object.defineProperty(exports, "Tuple", { enumerable: true, get: function () { return check_1.Tuple; } });
 const HTTPError_1 = require("./HTTPError");
 Object.defineProperty(exports, "HTTPError", { enumerable: true, get: function () { return HTTPError_1.HTTPError; } });
