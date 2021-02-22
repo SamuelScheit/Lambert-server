@@ -31,6 +31,26 @@ express_1.default.Router = function (options) {
 };
 class Server {
     constructor(opts) {
+        this.errorHandler = (error, req, res, next) => {
+            try {
+                let code;
+                let message = error === null || error === void 0 ? void 0 : error.toString();
+                if (error instanceof HTTPError_1.HTTPError && error.code)
+                    code = error.code || 400;
+                else {
+                    console.error(error);
+                    if (this.options.production) {
+                        message = "Internal Server Error";
+                    }
+                    code = 500;
+                }
+                res.status(code).json({ success: false, code: code, error: true, message });
+            }
+            catch (e) {
+                console.error(e);
+                return res.status(500).json({ success: false, code: 500, error: true, message: "Internal Server Error" });
+            }
+        };
         if (!opts)
             opts = {};
         if (!opts.port)
@@ -57,21 +77,6 @@ class Server {
         this.app.use(helmet_1.default.ieNoOpen());
         this.app.use(helmet_1.default.frameguard({ action: "deny" }));
         this.app.use(helmet_1.default.permittedCrossDomainPolicies({ permittedPolicies: "none" }));
-    }
-    errorHandler(error, req, res, next) {
-        let code = 400;
-        let message = error === null || error === void 0 ? void 0 : error.toString();
-        if (error instanceof HTTPError_1.HTTPError && error.code)
-            code = error.code;
-        else {
-            console.error(error);
-            if (this.options.production) {
-                message = "Internal Server Error";
-            }
-            code = 500;
-        }
-        res.status(code).json({ success: false, code: code, error: true, message });
-        return next();
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {

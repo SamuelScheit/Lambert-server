@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { Application, NextFunction, Request, Response, Router } from "express";
+import express, { Application, NextFunction, Request, Response, Router } from "express";
 import { Server as HTTPServer } from "http";
 import "express-async-errors";
 import "missing-native-js-functions";
@@ -26,7 +26,7 @@ export declare class Server {
     routes: Router[];
     constructor(opts?: Partial<ServerOptions>);
     protected secureExpress(): void;
-    errorHandler(error: Error, req: Request, res: Response, next: NextFunction): void;
+    errorHandler: (error: Error, req: Request, res: Response, next: NextFunction) => express.Response<any> | undefined;
     start(): Promise<void>;
     registerRoutes(root: string): Promise<any[]>;
     registerRoute(root: string, file: string): any;

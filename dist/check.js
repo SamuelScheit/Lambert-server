@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.instanceOf = exports.Email = exports.Tuple = exports.check = void 0;
 require("missing-native-js-functions");
+const _1 = require(".");
 const OPTIONAL_PREFIX = "$";
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 function check(schema) {
@@ -13,7 +14,7 @@ function check(schema) {
             throw result;
         }
         catch (error) {
-            next(error);
+            next(new _1.HTTPError(error.toString(), 400));
         }
     };
 }

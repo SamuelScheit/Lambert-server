@@ -64,22 +64,26 @@ export class Server {
 		this.app.use(helmet.permittedCrossDomainPolicies({ permittedPolicies: "none" }));
 	}
 
-	public errorHandler(error: Error, req: Request, res: Response, next: NextFunction) {
-		let code = 400;
-		let message = error?.toString();
+	public errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
+		try {
+			let code;
+			let message = error?.toString();
 
-		if (error instanceof HTTPError && error.code) code = error.code;
-		else {
-			console.error(error);
-			if (this.options.production) {
-				message = "Internal Server Error";
+			if (error instanceof HTTPError && error.code) code = error.code || 400;
+			else {
+				console.error(error);
+				if (this.options.production) {
+					message = "Internal Server Error";
+				}
+				code = 500;
 			}
-			code = 500;
-		}
 
-		res.status(code).json({ success: false, code: code, error: true, message });
-		return next();
-	}
+			res.status(code).json({ success: false, code: code, error: true, message });
+		} catch (e) {
+			console.error(e);
+			return res.status(500).json({ success: false, code: 500, error: true, message: "Internal Server Error" });
+		}
+	};
 
 	async start() {
 		await new Promise<void>((res) => this.app.listen(this.options.port, () => res()));
