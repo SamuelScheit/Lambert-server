@@ -75,6 +75,15 @@ function instanceOf(type, value, { path = "", optional = false } = {}) {
             throw `${path} must be a object`;
     }
     if (typeof type === "object") {
+        if (typeof value !== "object")
+            throw `${path} must be a object`;
+        if (Array.isArray(type)) {
+            if (!Array.isArray(value))
+                throw `${path} must be an array`;
+            if (!type.length)
+                return true; // type array didn't specify any type
+            return value.every((val, i) => instanceOf(type[0], val, { path: `${path}[${i}]`, optional }));
+        }
         if (((_a = type === null || type === void 0 ? void 0 : type.constructor) === null || _a === void 0 ? void 0 : _a.name) != "Object") {
             if (type instanceof Tuple) {
                 if (type.types.some((x) => instanceOf(x, value, { path, optional })))
@@ -89,15 +98,6 @@ function instanceOf(type, value, { path = "", optional = false } = {}) {
             if (value instanceof type)
                 return true;
             throw `${path} must be an instance of ${type}`;
-        }
-        if (typeof value !== "object")
-            throw `${path} must be a object`;
-        if (Array.isArray(type)) {
-            if (!Array.isArray(value))
-                throw `${path} must be an array`;
-            if (!type.length)
-                return true; // type array didn't specify any type
-            return value.every((val, i) => instanceOf(type[0], val, { path: `${path}[${i}]`, optional }));
         }
         const diff = Object.keys(value).missing(Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x)));
         if (diff.length)
