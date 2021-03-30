@@ -79,7 +79,7 @@ router.get("/test", (req, res) => {
 });
  
 // JSON body parser
-app.post("/", check({ username: String, age: Number, $posts: [{ title: String }] }), (req, res) => {});
+router.post("/", check({ username: String, age: Number, $posts: [{ title: String }] }), (req, res) => {});
 
 export default router;
 // module.exports = router
