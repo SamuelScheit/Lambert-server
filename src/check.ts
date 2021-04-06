@@ -77,7 +77,17 @@ export function instanceOf(
 		}
 		if (type?.constructor?.name != "Object") {
 			if (type instanceof Tuple) {
-				if ((<Tuple>type).types.some((x) => instanceOf(x, value, { path, optional }))) return true;
+				if (
+					(<Tuple>type).types.some((x) => {
+						try {
+							return instanceOf(x, value, { path, optional });
+						} catch (error) {
+							return false;
+						}
+					})
+				) {
+					return true;
+				}
 				throw `${path} must be one of ${type.types}`;
 			}
 			if (type instanceof Email) {

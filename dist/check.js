@@ -86,8 +86,16 @@ function instanceOf(type, value, { path = "", optional = false } = {}) {
         }
         if (((_a = type === null || type === void 0 ? void 0 : type.constructor) === null || _a === void 0 ? void 0 : _a.name) != "Object") {
             if (type instanceof Tuple) {
-                if (type.types.some((x) => instanceOf(x, value, { path, optional })))
+                if (type.types.some((x) => {
+                    try {
+                        return instanceOf(x, value, { path, optional });
+                    }
+                    catch (error) {
+                        return false;
+                    }
+                })) {
                     return true;
+                }
                 throw `${path} must be one of ${type.types}`;
             }
             if (type instanceof Email) {
