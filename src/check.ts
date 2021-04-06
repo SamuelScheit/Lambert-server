@@ -68,7 +68,6 @@ export function instanceOf(
 	}
 
 	if (typeof type === "object") {
-		if (typeof value !== "object") throw `${path} must be a object`;
 		if (Array.isArray(type)) {
 			if (!Array.isArray(value)) throw `${path} must be an array`;
 			if (!type.length) return true; // type array didn't specify any type
@@ -97,6 +96,7 @@ export function instanceOf(
 			if (value instanceof type) return true;
 			throw `${path} must be an instance of ${type}`;
 		}
+		if (typeof value !== "object") throw `${path} must be a object`;
 
 		const diff = Object.keys(value).missing(
 			Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x))
