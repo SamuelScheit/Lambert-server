@@ -16,7 +16,7 @@ exports.log = exports.traverseDirectory = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 require("missing-native-js-functions");
 const DEFAULT_EXCLUDE_DIR = /^\./;
-const DEFAULT_FILTER = /^([^\.].*)\.js$/;
+const DEFAULT_FILTER = /^([^\.].*)\.(js|ts)$/;
 function traverseDirectory(options, action) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!options.filter)
