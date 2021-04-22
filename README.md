@@ -24,14 +24,18 @@ const server = new Server({
 	port        : number  = 8080;       // the port to listen on
 	host        : string  = "0.0.0.0";  // the interface to listen on
 	production  : boolean = false;      // enable in production mode - this will hide internal server errors
-	errorHandler: boolean = true;       // Automatically register an error handler that displays JSON errors
+	errorHandler: (err: Error, req: Request, res: Response, next: NextFunction) => void // Default error handler displays JSON errors
 })
 ```
+To access the express [app](https://expressjs.com/de/4x/api.html#app) manually use ``server.app``
 
 ## Register Routes
 ```ts
 server.registerRoutes(root: string): Promise<any[]>; // root is the root directory of all routes
 ```
+The HTTP API path is generated automatically based on the folder structure, so it is important that you name your files accordingly.
+
+
 
 ## Body checking
 JSON body can be checked with a schema, that you pass to the check function.
