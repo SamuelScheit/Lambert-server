@@ -9,7 +9,7 @@ export interface traverseDirectoryOptions {
 }
 
 const DEFAULT_EXCLUDE_DIR = /^\./;
-const DEFAULT_FILTER = /^([^\.].*)\.js$/;
+const DEFAULT_FILTER = /^([^\.].*)\.(js|ts)$/;
 
 export async function traverseDirectory<T>(
 	options: traverseDirectoryOptions,
