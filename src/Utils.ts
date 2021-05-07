@@ -19,17 +19,19 @@ export async function traverseDirectory<T>(
 	if (!options.excludeDirs) options.excludeDirs = DEFAULT_EXCLUDE_DIR;
 
 	const routes = await fs.readdir(options.dirname);
-	const promises = <Promise<T | T[] | undefined>[]>routes.map(async (file) => {
-		const path = options.dirname + file;
-		const stat = await fs.lstat(path);
-		if (path.match(<RegExp>options.excludeDirs)) return;
+	const promises = <Promise<T | T[] | undefined>[]>routes
+		.sort((a, b) => (a.startsWith("#") ? 1 : -1)) // load #parameter routes last
+		.map(async (file) => {
+			const path = options.dirname + file;
+			const stat = await fs.lstat(path);
+			if (path.match(<RegExp>options.excludeDirs)) return;
 
-		if (stat.isFile() && path.match(<RegExp>options.filter)) {
-			return action(path);
-		} else if (options.recursive && stat.isDirectory()) {
-			return traverseDirectory({ ...options, dirname: path + "/" }, action);
-		}
-	});
+			if (stat.isFile() && path.match(<RegExp>options.filter)) {
+				return action(path);
+			} else if (options.recursive && stat.isDirectory()) {
+				return traverseDirectory({ ...options, dirname: path + "/" }, action);
+			}
+		});
 	const result = await Promise.all(promises);
 
 	const t = <(T | undefined)[]>result.flat();

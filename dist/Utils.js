@@ -24,7 +24,9 @@ function traverseDirectory(options, action) {
         if (!options.excludeDirs)
             options.excludeDirs = DEFAULT_EXCLUDE_DIR;
         const routes = yield promises_1.default.readdir(options.dirname);
-        const promises = routes.map((file) => __awaiter(this, void 0, void 0, function* () {
+        const promises = routes
+            .sort((a, b) => (a.startsWith("#") ? 1 : -1)) // load #parameter routes last
+            .map((file) => __awaiter(this, void 0, void 0, function* () {
             const path = options.dirname + file;
             const stat = yield promises_1.default.lstat(path);
             if (path.match(options.excludeDirs))
