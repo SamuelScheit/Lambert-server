@@ -106,7 +106,7 @@ class Server {
             root = root.slice(0, -1); // removes slash at the end of the root dir
         let path = file.replace(root, ""); // remove root from path and
         path = path.split(".").slice(0, -1).join("."); // trancate .js/.ts file extension of path
-        path = path.replaceAll("#", ":");
+        path = path.replaceAll("#", ":").replaceAll("\\", "/");
         if (path.endsWith("/index"))
             path = path.slice(0, -6); // delete index from path
         if (!path.length)
