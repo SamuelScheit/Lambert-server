@@ -66,7 +66,10 @@ class Server {
         if (opts.server)
             this.http = opts.server;
         this.options = opts;
-        this.app = express_1.default();
+        if (opts.app)
+            this.app = opts.app;
+        else
+            this.app = express_1.default();
     }
     secureExpress() {
         this.app.use(helmet_1.default.contentSecurityPolicy());

@@ -20,6 +20,7 @@ export declare type ServerOptions = {
     };
     jsonBody: boolean;
     server: http.Server;
+    app: Application;
 };
 export declare class Server {
     app: Application;
@@ -28,7 +29,7 @@ export declare class Server {
     routes: Router[];
     constructor(opts?: Partial<ServerOptions>);
     protected secureExpress(): void;
-    errorHandler: (error: Error, req: Request, res: Response, next: NextFunction) => express.Response<any> | undefined;
+    errorHandler: (error: Error, req: Request, res: Response, next: NextFunction) => express.Response<any, Record<string, any>> | undefined;
     start(): Promise<void>;
     registerRoutes(root: string): Promise<any[]>;
     registerRoute(root: string, file: string): any;

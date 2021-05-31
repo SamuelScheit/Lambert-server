@@ -23,6 +23,7 @@ export type ServerOptions = {
 	errorHandler?: { (err: Error, req: Request, res: Response, next: NextFunction): any };
 	jsonBody: boolean;
 	server: http.Server;
+	app: Application;
 };
 
 // Overwrite default options for Router with default value true for mergeParams
@@ -51,7 +52,8 @@ export class Server {
 
 		this.options = <ServerOptions>opts;
 
-		this.app = express();
+		if (opts.app) this.app = opts.app;
+		else this.app = express();
 	}
 
 	protected secureExpress() {
