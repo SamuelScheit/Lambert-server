@@ -3,6 +3,7 @@ import express, { Application, NextFunction, Request, Response, Router } from "e
 import { Server as HTTPServer } from "http";
 import "express-async-errors";
 import "missing-native-js-functions";
+import http from "http";
 declare global {
     namespace Express {
         interface Request {
@@ -18,6 +19,7 @@ export declare type ServerOptions = {
         (err: Error, req: Request, res: Response, next: NextFunction): any;
     };
     jsonBody: boolean;
+    server: http.Server;
 };
 export declare class Server {
     app: Application;

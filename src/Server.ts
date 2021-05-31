@@ -6,6 +6,7 @@ import "express-async-errors";
 import "missing-native-js-functions";
 import bodyParser from "body-parser";
 import helmet from "helmet";
+import http from "http";
 
 declare global {
 	namespace Express {
@@ -21,6 +22,7 @@ export type ServerOptions = {
 	production: boolean;
 	errorHandler?: { (err: Error, req: Request, res: Response, next: NextFunction): any };
 	jsonBody: boolean;
+	server: http.Server;
 };
 
 // Overwrite default options for Router with default value true for mergeParams
@@ -45,6 +47,7 @@ export class Server {
 		if (opts.production == null) opts.production = false;
 		if (opts.errorHandler == null) opts.errorHandler = this.errorHandler;
 		if (opts.jsonBody == null) opts.jsonBody = true;
+		if (opts.server) this.http = opts.server;
 
 		this.options = <ServerOptions>opts;
 
@@ -86,7 +89,12 @@ export class Server {
 	};
 
 	async start() {
-		await new Promise<void>((res) => this.app.listen(this.options.port, () => res()));
+		const server = this.http || this.app;
+		if (!server.listening) {
+			await new Promise<void>((res) => {
+				this.http = server.listen(this.options.port, () => res());
+			});
+		}
 		log(`[Server] started on ${this.options.host}:${this.options.port}`);
 	}
 

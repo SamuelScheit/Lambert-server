@@ -63,6 +63,8 @@ class Server {
             opts.errorHandler = this.errorHandler;
         if (opts.jsonBody == null)
             opts.jsonBody = true;
+        if (opts.server)
+            this.http = opts.server;
         this.options = opts;
         this.app = express_1.default();
     }
@@ -80,7 +82,12 @@ class Server {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield new Promise((res) => this.app.listen(this.options.port, () => res()));
+            const server = this.http || this.app;
+            if (!server.listening) {
+                yield new Promise((res) => {
+                    this.http = server.listen(this.options.port, () => res());
+                });
+            }
             Utils_1.log(`[Server] started on ${this.options.host}:${this.options.port}`);
         });
     }
