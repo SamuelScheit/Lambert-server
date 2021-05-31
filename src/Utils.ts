@@ -26,7 +26,7 @@ export async function traverseDirectory<T>(
 			const stat = await fs.lstat(path);
 			if (path.match(<RegExp>options.excludeDirs)) return;
 
-			if (stat.isFile() && path.match(<RegExp>options.filter)) {
+			if (path.match(<RegExp>options.filter) && stat.isFile()) {
 				return action(path);
 			} else if (options.recursive && stat.isDirectory()) {
 				return traverseDirectory({ ...options, dirname: path + "/" }, action);

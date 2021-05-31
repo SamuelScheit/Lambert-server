@@ -31,7 +31,7 @@ function traverseDirectory(options, action) {
             const stat = yield promises_1.default.lstat(path);
             if (path.match(options.excludeDirs))
                 return;
-            if (stat.isFile() && path.match(options.filter)) {
+            if (path.match(options.filter) && stat.isFile()) {
                 return action(path);
             }
             else if (options.recursive && stat.isDirectory()) {
