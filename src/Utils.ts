@@ -1,4 +1,4 @@
-import fs from "fs/promises";
+import fs from "fs";
 import "missing-native-js-functions";
 
 export interface traverseDirectoryOptions {
@@ -18,12 +18,12 @@ export async function traverseDirectory<T>(
 	if (!options.filter) options.filter = DEFAULT_FILTER;
 	if (!options.excludeDirs) options.excludeDirs = DEFAULT_EXCLUDE_DIR;
 
-	const routes = await fs.readdir(options.dirname);
+	const routes = fs.readdirSync(options.dirname);
 	const promises = <Promise<T | T[] | undefined>[]>routes
 		.sort((a, b) => (a.startsWith("#") ? 1 : -1)) // load #parameter routes last
 		.map(async (file) => {
 			const path = options.dirname + file;
-			const stat = await fs.lstat(path);
+			const stat = fs.lstatSync(path);
 			if (path.match(<RegExp>options.excludeDirs)) return;
 
 			if (path.match(<RegExp>options.filter) && stat.isFile()) {
