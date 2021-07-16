@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.log = exports.traverseDirectory = void 0;
+exports.traverseDirectory = void 0;
 const fs_1 = __importDefault(require("fs"));
 require("missing-native-js-functions");
 const DEFAULT_EXCLUDE_DIR = /^\./;
@@ -44,8 +44,4 @@ function traverseDirectory(options, action) {
     });
 }
 exports.traverseDirectory = traverseDirectory;
-function log(...args) {
-    console.log(`[${new Date().toTimeString().split(" ")[0]}]`, ...args);
-}
-exports.log = log;
 //# sourceMappingURL=Utils.js.map

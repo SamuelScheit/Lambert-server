@@ -20,6 +20,7 @@ require("express-async-errors");
 require("missing-native-js-functions");
 const body_parser_1 = __importDefault(require("body-parser"));
 const helmet_1 = __importDefault(require("helmet"));
+const chalk_1 = __importDefault(require("chalk"));
 // Overwrite default options for Router with default value true for mergeParams
 const oldRouter = express_1.default.Router;
 express_1.default.Router = function (options) {
@@ -90,8 +91,11 @@ class Server {
                 yield new Promise((res) => {
                     this.http = server.listen(this.options.port, () => res());
                 });
+                this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
             }
-            Utils_1.log(`[Server] started on ${this.options.host}:${this.options.port}`);
+            else {
+                console.log("server already listening");
+            }
         });
     }
     registerRoutes(root) {
@@ -109,6 +113,29 @@ class Server {
                 this.secureExpress();
             return result;
         });
+    }
+    log(l, ...args) {
+        // @ts-ignore
+        if (!console[l])
+            l = "verbose";
+        const level = l === "verbose" ? "log" : l;
+        var color;
+        switch (level) {
+            case "error":
+                color = "red";
+                break;
+            case "warn":
+                color = "yellow";
+                break;
+            case "info":
+                color = "blue";
+            case "log":
+            default:
+                color = "reset";
+        }
+        if (this.options.production && l === "verbose")
+            return;
+        console[level](chalk_1.default[color](`[${new Date().toTimeString().split(" ")[0]}]`), ...args);
     }
     registerRoute(root, file) {
         var _a, _b;
@@ -132,7 +159,7 @@ class Server {
             if (this.options.errorHandler)
                 router.use(this.options.errorHandler);
             this.app.use(path, router);
-            Utils_1.log(`[Server] Route ${path} registered`);
+            this.log("verbose", `[Server] Route ${path} registered`);
             return router;
         }
         catch (error) {

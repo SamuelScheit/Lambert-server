@@ -32,6 +32,7 @@ export declare class Server {
     errorHandler: (error: Error, req: Request, res: Response, next: NextFunction) => express.Response<any, Record<string, any>> | undefined;
     start(): Promise<void>;
     registerRoutes(root: string): Promise<any[]>;
+    log(l: "info" | "error" | "warn" | "verbose", ...args: any[]): void;
     registerRoute(root: string, file: string): any;
     stop(): Promise<void>;
 }

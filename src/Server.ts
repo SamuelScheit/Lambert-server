@@ -1,5 +1,5 @@
 import express, { Application, NextFunction, Request, Response, Router } from "express";
-import { traverseDirectory, log } from "./Utils";
+import { traverseDirectory } from "./Utils";
 import { Server as HTTPServer } from "http";
 import { HTTPError } from "./HTTPError";
 import "express-async-errors";
@@ -7,6 +7,7 @@ import "missing-native-js-functions";
 import bodyParser from "body-parser";
 import helmet from "helmet";
 import http from "http";
+import chalk from "chalk";
 
 declare global {
 	namespace Express {
@@ -96,8 +97,10 @@ export class Server {
 			await new Promise<void>((res) => {
 				this.http = server.listen(this.options.port, () => res());
 			});
+			this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
+		} else {
+			console.log("server already listening");
 		}
-		log(`[Server] started on ${this.options.host}:${this.options.port}`);
 	}
 
 	async registerRoutes(root: string) {
@@ -110,6 +113,33 @@ export class Server {
 		if (this.options.errorHandler) this.app.use(this.options.errorHandler);
 		if (this.options.production) this.secureExpress();
 		return result;
+	}
+
+	log(l: "info" | "error" | "warn" | "verbose", ...args: any[]) {
+		// @ts-ignore
+		if (!console[l]) l = "verbose";
+
+		const level = l === "verbose" ? "log" : l;
+
+		var color: "red" | "yellow" | "blue" | "reset";
+
+		switch (level) {
+			case "error":
+				color = "red";
+				break;
+			case "warn":
+				color = "yellow";
+				break;
+			case "info":
+				color = "blue";
+			case "log":
+			default:
+				color = "reset";
+		}
+
+		if (this.options.production && l === "verbose") return;
+
+		console[level](chalk[color](`[${new Date().toTimeString().split(" ")[0]}]`), ...args);
 	}
 
 	registerRoute(root: string, file: string): any {
@@ -129,7 +159,8 @@ export class Server {
 
 			if (this.options.errorHandler) router.use(this.options.errorHandler);
 			this.app.use(path, <Router>router);
-			log(`[Server] Route ${path} registered`);
+
+			this.log("verbose", `[Server] Route ${path} registered`);
 			return router;
 		} catch (error) {
 			console.error(new Error(`[Server] Failed to register route ${path}: ${error}`));
