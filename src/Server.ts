@@ -98,8 +98,6 @@ export class Server {
 				this.http = server.listen(this.options.port, () => res());
 			});
 			this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
-		} else {
-			console.log("server already listening");
 		}
 	}
 

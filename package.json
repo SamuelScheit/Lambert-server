@@ -1,6 +1,6 @@
 {
 	"name": "lambert-server",
-	"version": "1.2.8",
+	"version": "1.2.9",
 	"description": "An express.js route handler",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -35,6 +35,6 @@
 		"express": "^4.17.1",
 		"express-async-errors": "^3.1.1",
 		"helmet": "^4.4.1",
-		"missing-native-js-functions": "^1.1.8"
+		"missing-native-js-functions": "^1.2.11"
 	}
 }
