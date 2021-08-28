@@ -3,7 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPError } from ".";
 
 const OPTIONAL_PREFIX = "$";
-const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const EMAIL_REGEX =
+	/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export function check(schema: any) {
 	return (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +13,7 @@ export function check(schema: any) {
 			if (result === true) return next();
 			throw result;
 		} catch (error) {
-			next(new HTTPError(error.toString(), 400));
+			next(new HTTPError((error as any).toString(), 400));
 		}
 	};
 }

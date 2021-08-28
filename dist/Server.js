@@ -70,7 +70,7 @@ class Server {
         if (opts.app)
             this.app = opts.app;
         else
-            this.app = express_1.default();
+            this.app = (0, express_1.default)();
     }
     secureExpress() {
         this.app.use(helmet_1.default.contentSecurityPolicy());
@@ -93,9 +93,6 @@ class Server {
                 });
                 this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
             }
-            else {
-                console.log("server already listening");
-            }
         });
     }
     registerRoutes(root) {
@@ -106,7 +103,7 @@ class Server {
             });
             if (this.options.jsonBody)
                 this.app.use(body_parser_1.default.json());
-            const result = yield Utils_1.traverseDirectory({ dirname: root, recursive: true }, this.registerRoute.bind(this, root));
+            const result = yield (0, Utils_1.traverseDirectory)({ dirname: root, recursive: true }, this.registerRoute.bind(this, root));
             if (this.options.errorHandler)
                 this.app.use(this.options.errorHandler);
             if (this.options.production)
