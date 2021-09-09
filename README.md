@@ -70,7 +70,7 @@ In /routes/index.js
 import { Router } from "express";
 import { HTTPError, check } from "lambert-server";
 // const { Router } = require("express")
-// const { HTTPError } = require("lambert-server")
+// const { HTTPError, check } = require("lambert-server")
 
 const router = Router();
 
