@@ -24,6 +24,7 @@ const server = new Server({
 	port        : number  = 8080;       // the port to listen on
 	host        : string  = "0.0.0.0";  // the interface to listen on
 	production  : boolean = false;      // enable in production mode - this will hide internal server errors
+	routeLogging: boolean = true; // log when routes are registered at startup
 	errorHandler: (err: Error, req: Request, res: Response, next: NextFunction) => void // Default error handler displays JSON errors
 })
 ```
