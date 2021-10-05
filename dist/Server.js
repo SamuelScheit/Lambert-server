@@ -60,8 +60,8 @@ class Server {
             opts.host = "0.0.0.0";
         if (opts.production == null)
             opts.production = false;
-        if (opts.routeLogging == null)
-            opts.routeLogging = true;
+        if (opts.serverInitLogging == null)
+            opts.serverInitLogging = true;
         if (opts.errorHandler == null)
             opts.errorHandler = this.errorHandler;
         if (opts.jsonBody == null)
@@ -93,7 +93,8 @@ class Server {
                 yield new Promise((res) => {
                     this.http = server.listen(this.options.port, () => res());
                 });
-                this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
+                if (this.options.serverInitLogging)
+                    this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
             }
         });
     }
@@ -158,7 +159,7 @@ class Server {
             if (this.options.errorHandler)
                 router.use(this.options.errorHandler);
             this.app.use(path, router);
-            if (this.options.routeLogging)
+            if (this.options.serverInitLogging)
                 this.log("verbose", `[Server] Route ${path} registered`);
             return router;
         }
