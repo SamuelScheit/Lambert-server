@@ -60,6 +60,8 @@ class Server {
             opts.host = "0.0.0.0";
         if (opts.production == null)
             opts.production = false;
+        if (opts.routeLogging == null)
+            opts.routeLogging = true;
         if (opts.errorHandler == null)
             opts.errorHandler = this.errorHandler;
         if (opts.jsonBody == null)
@@ -156,7 +158,8 @@ class Server {
             if (this.options.errorHandler)
                 router.use(this.options.errorHandler);
             this.app.use(path, router);
-            this.log("verbose", `[Server] Route ${path} registered`);
+            if (this.options.routeLogging)
+                this.log("verbose", `[Server] Route ${path} registered`);
             return router;
         }
         catch (error) {
