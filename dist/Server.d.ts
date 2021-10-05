@@ -15,6 +15,7 @@ export declare type ServerOptions = {
     port: number;
     host: string;
     production: boolean;
+    routeLogging: boolean;
     errorHandler?: {
         (err: Error, req: Request, res: Response, next: NextFunction): any;
     };
