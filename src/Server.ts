@@ -21,6 +21,7 @@ export type ServerOptions = {
 	port: number;
 	host: string;
 	production: boolean;
+	routeLogging: boolean;
 	errorHandler?: { (err: Error, req: Request, res: Response, next: NextFunction): any };
 	jsonBody: boolean;
 	server: http.Server;
@@ -47,6 +48,7 @@ export class Server {
 		if (!opts.port) opts.port = 8080;
 		if (!opts.host) opts.host = "0.0.0.0";
 		if (opts.production == null) opts.production = false;
+		if (opts.routeLogging == null) opts.routeLogging = true;
 		if (opts.errorHandler == null) opts.errorHandler = this.errorHandler;
 		if (opts.jsonBody == null) opts.jsonBody = true;
 		if (opts.server) this.http = opts.server;
@@ -158,7 +160,8 @@ export class Server {
 			if (this.options.errorHandler) router.use(this.options.errorHandler);
 			this.app.use(path, <Router>router);
 
-			this.log("verbose", `[Server] Route ${path} registered`);
+			if(this.options.routeLogging) this.log("verbose", `[Server] Route ${path} registered`);
+		
 			return router;
 		} catch (error) {
 			console.error(new Error(`[Server] Failed to register route ${path}: ${error}`));
