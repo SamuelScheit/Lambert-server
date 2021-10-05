@@ -21,7 +21,7 @@ export type ServerOptions = {
 	port: number;
 	host: string;
 	production: boolean;
-	routeLogging: boolean;
+	serverInitLogging: boolean;
 	errorHandler?: { (err: Error, req: Request, res: Response, next: NextFunction): any };
 	jsonBody: boolean;
 	server: http.Server;
@@ -48,7 +48,7 @@ export class Server {
 		if (!opts.port) opts.port = 8080;
 		if (!opts.host) opts.host = "0.0.0.0";
 		if (opts.production == null) opts.production = false;
-		if (opts.routeLogging == null) opts.routeLogging = true;
+		if (opts.serverInitLogging == null) opts.serverInitLogging = true;
 		if (opts.errorHandler == null) opts.errorHandler = this.errorHandler;
 		if (opts.jsonBody == null) opts.jsonBody = true;
 		if (opts.server) this.http = opts.server;
@@ -99,7 +99,7 @@ export class Server {
 			await new Promise<void>((res) => {
 				this.http = server.listen(this.options.port, () => res());
 			});
-			this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
+			if(this.options.serverInitLogging) this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
 		}
 	}
 
@@ -160,7 +160,7 @@ export class Server {
 			if (this.options.errorHandler) router.use(this.options.errorHandler);
 			this.app.use(path, <Router>router);
 
-			if(this.options.routeLogging) this.log("verbose", `[Server] Route ${path} registered`);
+			if(this.options.serverInitLogging) this.log("verbose", `[Server] Route ${path} registered`);
 		
 			return router;
 		} catch (error) {
