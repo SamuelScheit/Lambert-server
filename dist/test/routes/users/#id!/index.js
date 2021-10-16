@@ -4,6 +4,9 @@ const express_1 = require("express");
 const check_1 = require("../../../../check");
 const app = (0, express_1.Router)();
 app.get("/", (req, res) => {
+    // @ts-ignore
+    if (!req.params.id)
+        return res.send('No user specified');
     console.log(req.params);
     res.send("USER");
 });
