@@ -4,6 +4,8 @@ import { check } from "../../../../check";
 const app = Router();
 
 app.get("/", (req, res) => {
+	// @ts-ignore
+	if (!req.params.id) return res.send('No user specified');
 	console.log(req.params);
 	res.send("USER");
 });
